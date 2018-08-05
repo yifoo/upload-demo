@@ -6,17 +6,37 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>文件上传demo</title>
   <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <style>
+    #file{
+      display:none;
+    }
+    input[type='button']{
+      display:inline-block;
+      width:60px;
+      height:30px;
+      background:lightblue;
+    }
+  </style>
 </head>
 <body>
   <form action="" >
     <label for="upload">手动上传文件</label>  <br>
-    <input type="file" name="file" id="upload"> <br>
+    <input type="file" name="file" id="file"> <br>
+    <input type="button" value="选择文件" id="choose"> <br>
+    <hr/>
     <input type="button" value="上传" id="submit">
   </form>
   <script>
+    // 自定义上传文件input样式解决方案
+    $("#choose").on("click",function(){
+      $("#file").trigger('click')
+      $("#file").on("change",function(){
+        console.log(this.files[0])
+      })
+    })
   $("#submit").on("click",function(e){
     e.preventDefault()
-    var file = $("#upload")[0].files[0]
+    var file = $("#file")[0].files[0]
     var formData = new FormData(); // FormData 对象
     formData.append("files", file)
     formData.append("userName", '小明')
