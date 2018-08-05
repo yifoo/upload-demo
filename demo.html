@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>文件上传demo</title>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+  <form action="" >
+    <label for="upload">手动上传文件</label>  <br>
+    <input type="file" name="file" id="upload"> <br>
+    <input type="button" value="上传" id="submit">
+  </form>
+  <script>
+  $("#submit").on("click",function(e){
+    e.preventDefault()
+    var file = $("#upload")[0].files[0]
+    var formData = new FormData(); // FormData 对象
+    formData.append("files", file)
+    formData.append("userName", '小明')
+    $.ajax({
+      url:'http://127.0.0.1:3000/upload',
+      type:'post',
+      data:formData,
+      processData:false, 
+      contentType:false,
+      // xhr 这个可以显示上传进度,有时会涉及跨域问题
+      xhr: function () { //在jquery函数中直接使用ajax的XMLHttpRequest对象  
+        var xhr = new XMLHttpRequest();
+        // 监听上传进度
+        xhr.upload.addEventListener("progress", function (evt) {
+          if (evt.lengthComputable) {
+            var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+            console.log("正在提交." + percentComplete.toString() + '%'); //在控制台打印上传进度  
+          }
+        }, false);
+        return xhr;
+      },
+      success:function(resp){
+        if (typeof (resp) == 'string') {
+          resp = JSON.parse(resp)
+        }
+        if(resp.respCode =='01'){
+          console.log("上传成功")
+        }
+      }
+    })
+    return false
+  })
+    
+  </script>
+</body>
+</html>
